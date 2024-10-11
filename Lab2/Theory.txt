@@ -1,0 +1,44 @@
+Cryptography 
+- Caesar Cipher C = E(p) = p + 3. E.g. A => D, B => E
+
+- Mono-Alphabetic substitution cipher with K = 7. E.g. A = H, B = I
+
+- Vigenère cipher (A-Z*A-Z) with K=ITPE, D = L, A = T.
+
+- One-Time Pad: Encryption algorithm there the key is a random sequence of symbols and only used for one time. Key is destroyed after use.
+
+- Random number generator: Key generation, Saltin, Nonces
+
+- Modern cryptography: Symmetric and Asymmetric
+
+- Symmetric Cryptography: same key for encryption and decryption
+
+- Asymmetric Cryptography: a public (encrypts or verifies) and private key (decrypts or sings) used for cryptographic operations. 
+
+- A good cryptography: 
+	- Based on mathematical principles
+	- Analyzed by experts and found safe
+	- Has passed the "test of time" (no one has found weakness yet)
+
+- Hash function: avoids encryption but maintains integrity
+	- Given message m, easy and fast to calculate hash value h
+	- Given the message m, hash function always produces same hash value h for same message m
+	- Give hash value h, difficult to calculate the message m
+
+- E.g. of hash functions
+	- sh-2, sha-3
+	- Blake, Blake2
+	- ripemd-160, ripemd-256, ripemd-320
+	- whirlpool
+
+- Steganography: hide text. E.g. image or audio file
+	Hide in image in linux using command steghide (If sender encrypted with passphrase, receiver has to have the same passphrase)
+	steghide extract -v -sf star-trek-enterprise.jpg
+		Enter passphrase:
+	If succeeds, extracts message to file msg.txt
+
+- Convert text to hash with linux
+	echo -n 'HELLO' | openssl dgst -sha224
+	cat testhashfunction.txt | openssl dgst -sha224
+
+

@@ -1,0 +1,138 @@
+Modern Symmetric encryption:
+    - DES (Digital encryption standard), 3DES, AES (Advanced encryption standard)
+    - block and key length 128, 192 and 256 bits
+    - AES resistant to all known cryptanalysis
+
+AES
+    - uses 10, 12 or 14 rounds for the keys 128, 192 and 256
+    - 4 steps
+        1. AddRoundKey: Each byte in table combined with "round key", which is derived from key
+        2. SubBytes: Each byte in table replaced with another based on a lookup table
+        3. ShiftRows: Each row in table shifted cyclically by certain number of steps
+        4. MixColumns: An invertable linear transformation performed on each column in table
+
+    - "Rinjdael Cipher"
+
+Block Ciphers: encrypts blocks of data with fixed length/size
+    - divides data into block that are x number of bits and encrypts them to blocks that also have x number of bits
+    - block sizes vary depending on the algorithm (56-256 bits)
+    - Symmetric encryption using the Block cipher metod are: DES, 3DES, AES, RC6, Blowfish, Twofish, Serpent and IDEA.
+
+    Electronic Code Book (ECB)
+        - Symmetric encryption each block od data with the same key
+        - Not suitable for long messages or large files
+        - Vulnerable to replay attacks
+
+Stream Ciphers: encrypts stream of bits.
+    - encrypts one bit/byte at a time
+    - E.g. Salsa20, ChaCha, SEAL, TWOPRIME, RC4, A5(GCM)
+
+
+Cipher Block Chaining (CBC)
+    - To solve ECB, randomize the blocks before encryption
+    - CBC performs an XOR operation on each subsequent plaintext block with the previous digit block and then performs the encryption
+    - To make each message unique, an Initialization Vector IV must be used in the first block.
+        - Initialization Vector IV: does not have to be secret, but it is important that it is random and that it is never used again with the same key
+
+Cipher Feedback (CFB)
+    - Input is processed s bits at a time. 
+    - Preceding ciphertext is used as input to the encryption algorithm to produce pseudorandom output, which is XORed with plaintext to produce next unit of ciphertext.
+
+Output Feedback (OFB)
+    - similar to CFB, except that the input to the encryption algorithm is the preceding DES output.
+
+Counter (CTR)
+    - Each block of plaintext is XORed with an encrypted counter. The counter is incremented for each subsequent block.
+    - Useful for high-speed requirements
+
+Strengts of Symmetric cryptography
+    - Much faster than assymetric
+    - hard to break if using a large key size
+
+Weakness of Symmetric cryptography
+    - Requires secure mechanism to deliver keys properly
+    - Each pair of users needs a unique key, so as the number of individuals increases, so does the nubmer of keys, possibly making key management overwhelming
+    - Provides confidentiality but not authenticity or non-repudiation
+
+Asymmetric cryptography
+    - can use modular math
+    - RSA algorithm
+        - n = p*q
+
+    - RSA e.g.
+        p = 3 and q = 11
+        n = 3*11 = 33
+        ø(n) = (p-1)*(q-1) = 2*10 = 20
+        Now we have to chose an exponent, e that is relatively prime to ø(n) = (p-1)*(q-1)
+            e and ø(n) cant share factors other than 1 (gcd(e,ø(n)) = 1)
+            lets choose 7 as e
+        the pair (e, n) is our public key used to encrypt message
+        Calculate value for d, must be inverse of e, modulo n
+            e*d ≡ 1 mod ø(n)
+            d = 3 [(3*7) mod 20 = 1]
+        Public key is (e, n) => (7, 33) and private key is (d, n) => (3, 33)
+
+        The encryption of m = 2 is C = 2^7 mod 33 = 29
+        The decryption of c = 29 is m = 29^3 mod 33 = 2
+
+Strengts of Asymmetric cryptography
+    - Better key distribution than Symmetric cryptography
+    - Better scalability than Symmetric
+    - Can provide authentication/authenticity and non-repudiation
+    - Hard to break if using a large key size
+
+Weakness of Asymmetric cryptography
+    - Works much more slowly than Symmetric
+    - Mathematically intensive tasks specially when using large keys
+
+Signing with assymetric algorithms
+    - KprivAlice, KpublicAlice
+    - openssl dgst -sha512 -sign privAlice.pem -out hashavfilen.bin Melding.txt
+
+Verification with openssl
+    - openssl dgst -sha512 -verify pubAlice.pem -signature hashverdi.bin Melding.txt
+
+Challenge of assymetric algorithms
+    - How do you know if Alice's public key is Alice and not someone else. Maybe Eve made a key pair, published and pretended to be Alice?
+    - Can be resolved with Trusted Third Party(TTP)
+        - E.g. Certificates signed by a Certificate Authority (CA)
+        - Pretty good privacy (PGP) Web of Trust
+
+Encripting AES ECB Mode, Encypting our message in file1 into encrypted file secret.enc
+    - openssl enc -aes-256-ecb -in file-1.txt -out secret.enc -pbkdf2
+
+decrypting
+    - openssl enc -d -aes-256-ecb -in secret.enc -out msg.txt -pbkdf2
+
+Encripting AES CBC mode
+    - openssl enc -aes-256-cbc -in file-1.txt -out secret.enc -pbkdf2 -iv 6AB9ECCE8DA6C51535897366CA096B3E -K F0870FB97794DA354745A573756CC281F8D6748C3650BDA2DDFC23DDC3E24915
+
+Encripting AES CTR mode
+    - openssl enc -aes-256-ctr -in file-1.txt -out secret.enc -pbkdf2 -iv 6AB9ECCE8DA6C51535897366CA096B3E -K F0870FB97794DA354745A573756CC281F8D6748C3650BDA2DDFC23DDC3E24915
+
+RSA mode
+    - First generate private key
+        - openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out privkey-Alice.
+        
+    - Now derive public and private from each other
+        - openssl pkey -in privkey-Alice.pem -out pubkey-Alice.pem -pubout
+
+    - Bob wants to send to Alice
+        -  openssl pkeyutl -encrypt -in top-secret.txt -pubin -inkey pubkey-Alice.pem -out top-secret.enc
+    
+    - Alice decrypting Bobs message
+        - openssl pkeyutl -decrypt -in top-secret.enc -inkey privkey-Alice.pem -out file-from-Bob-txt
+    
+DigSig Symmetric Crypto
+    - Want to send message.txt to friend. Nothing confidential but dont want it to be tampered with/changing content of. Me and friend use a secret key/phrase: datasikkerhet
+    - openssl dgst -sha512 -hmac datasikkerhet message.txt
+        - Hash value will be printed
+        - Send file and hash to friend 
+        - Hackers cant do anything without secret key
+
+DigSig Asymmetric Crypto
+    - openssl dgst -sha512 -sign privkey-ismail.pem -out msg.hash msg.txt
+    
+    - verify with:
+        - openssl dgst -sha512 -verify pubkey-ismail.pem -signature msg.hash msg.txt
+

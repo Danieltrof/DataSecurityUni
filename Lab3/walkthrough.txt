@@ -1,0 +1,65 @@
+1. The following file is encrypted with Advanced Encryption Standard (AES). Use Openssl to decrypt the file and then read the contents.
+
+The encrypted file secret-5-aes-256-cbc.enc is stored in the Linux machine under the folder Lab-3/Symmetric-Chryptography/256-CBC/
+
+HINT!
+
+The encryption algorithm, key length and Block Cipher Mode type are part of the filename.
+
+The encryption key K = 6DB15EAA6A133737B1D11725FC80CBB37C185BA8E30F7B146AF14C9EAF3C474E
+
+Initialization vector IV = 1ED8C5931AF4DD810EEF4A136F578D77
+
+Which of the following text corresponds to the decrypted content?
+
+## openssl enc -aes-256-cbc -d -in secret-5-aes-256-cbc.enc -out decrypted-secret.txt -iv 1ED8C5931AF4DD810EEF4A136F578D77 -K 6DB15EAA6A133737B1D11725FC80CBB37C185BA8E30F7B146AF14C9EAF3C474E
+
+The most certain way to succeed is always to try just one more time
+
+2. The purpose of this task is to understand how digital signatures function using Hash Message Authentication Code (HMAC). You will be asked to check the integrity of a file by verifying the hash value using a secret key/phrase:
+
+The secret key/prase is: Ce9ayYMTz4
+
+The hash function used is:  sha256
+
+The file msg-1.txt containing the message is stored in the Linux machine under the folder Lab-3/Symmetric-Chryptography/Files/.
+
+What is the correct HMAC digests  for the file using the secret key/phrase provided to you?
+ 
+## openssl dgst -sha256 -hmac Ce9ayYMTz4 msg-1.txt
+
+578b3e3ea291a0ed0ade664fb07d08adc26acf44598231d059316863d4210e1e
+
+3. he following file is encrypted with an RSA asymmetric encryption. Use Openssl to decrypt the file and then read the contents.
+
+Use the encrypted file File-6.enc
+
+The file is stored under the folder Lab-3/Asymmetric-Chriptography/Files/
+
+HINT!
+
+In Asymmetric Cryptography, two keys are involved namely a public key and a private key.  In order to decrypt the file, you need the private key. Even though the private key should be kept save and secure, in this task, we assume that you are the owner of the private key which is stored under the folder Lab-3/Asymmetric-Chriptography/PrivateKeys/.
+
+Use the private key privkey-user6.pem
+
+What is the decrypted content?
+
+## openssl pkeyutl -decrypt -inkey ../PrivateKeys/privkey-user6.pem -in File-6.enc -out decrypted-file.txt
+
+collaborates
+
+4. The purpose of this task is to understand how digital signatures function. You will be asked to use a file containing a message and another one containing the hash value of the file signed with the private key of a user. Assuming that you have the public key of the user obtained in a secure manner, it should be straightforward and easy to verify the authenticity, non-repudiation and integrity of the message.
+
+Use the file msg-8.txt which contains the message. The file is stored under the folder Lab-3/Digital-Signature-Asymmetric/Files/
+
+Use the file msg-8.hash which contains the hash value. The file is stored under the folder Lab-3/Digital-Signature-Asymmetric/Files/
+
+Use one of the following public keys which are stored under the folder Lab-3/Digital-Signature-Asymmetric/PublicKeys/:
+
+Verify the signature with one of the public keys, using the sha512 digest and answer the question.
+
+Which public key can verify the signature?
+
+## openssl dgst -sha512 -verify pubkey-hans.pem -signature ../Files/msg-8.hash ../Files/msg-8.txt
+
+pubkey-hans.pem

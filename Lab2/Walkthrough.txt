@@ -1,0 +1,29 @@
+1. Encrypt the following text using Caesar's cipher (with the English alphabet and k = 2 as a key):
+USEFULNESS
+
+WUGHWNPGUU
+
+2. Decrypt the following text using Caesar's cipher (with the English alphabet and encrypted with the k = 7 as a key):
+UBTLYHAPVU
+
+NUMERATEON
+
+3. Use the Vigenère table from the lecture to encrypt the following text with FONT as the key:
+FAIRGROUND
+
+KOVKLFBNSR
+
+4. Use the Vigenère table to decrypt the following cipher text with SECRET as the key:
+XEUTMGSXQI
+
+FASCINATOR
+
+5. What is the BLAKE2s256 hash value of the file hello-6.sh?
+cat hello-6.sh | openssl dgst -blake2s256
+
+84e85039739d5089bf0ec6e39983b11fc234249caac5e05 
+
+6. Extract the secret message hidden in the file image-12.jpg using steghide. If asked, the passphrase is: WKTFXK
+steghide extract -v -sf image-12.jpg
+
+FEXAWX

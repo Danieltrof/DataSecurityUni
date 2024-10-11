@@ -1,0 +1,14 @@
+The purpose of this assignment is for the student to connect to and get accustomed to web based Linux machine that we will use in the course.
+
+It can only be accessed from OsloMets network, therefore you will either have to connect to the OsloMets VPN or be on Campus.
+
+Once you login, you will get an access to Linux terminal through your browser that contains this weeks task, which is to decrypt a file containing a secret string. 
+
+This labs task is:
+Using the passphrase XRCOAYTJCA  decrypt the file file-16.gpg under the directory Lab-1.
+
+Solution:
+cd Lab1
+gpg -d file-16.gpg
+"Inserting the passphrase to get secret string"
+VPSWUKPGNF
