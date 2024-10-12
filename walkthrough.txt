@@ -1,0 +1,78 @@
+1. The goal of this assignment is to be familiar with the process of exchanging a secret key by using the Diffie-Hellman key exchange algorithm.
+Use the following parameters to calculate Alice public key, Bobs public key and the shared secret key:
+
+prime number (public prime modulus) = 1861
+primitive root (public prime base) = 1319
+Alice private key = 929
+Bob private key = 599
+ 
+
+Alice public key is: 
+491
+
+Bob public key is: 
+86
+
+The secret key is: 
+541
+
+
+    itpe3100@labs:~$ calc 1319^929%1861
+    491
+    itpe3100@labs:~$ calc 1319^599%1861
+    86
+    itpe3100@labs:~$ 86^929%1861
+    bash: 86^929%1861: command not found
+    itpe3100@labs:~$ calc 86^929%1861
+    541
+    itpe3100@labs:~$ 
+
+2. Operating systems and browsers come bundled with lots of Certificate Authorities(CA) Root public certificates. In Linux the CA certificates are stored under the /etc/ssl/certs/directory.
+
+Explore the directory in order to answer the question:
+
+Which of the following CA certificates is stored in the Linux machine?
+
+HINT!
+
+Use the following command to list all the certificates under the directory and just show the one you are looking. For example if the certificate name contains the word ITPE3100 then do the following:
+
+ls -l /etc/ssl/certs/ | grep -i ITPE3100
+
+Group of answer choices
+
+Autoridad_Root.pm
+
+IdenTrust_Public_Sector_Root_3.pem
+
+QuoVadis_Root_CA_3_G3.pem
+
+SwissSign_Silver_CA_-_G2.pem
+
+3. The purpose of this assignment is to explore the information contained in an X.509 certificate. All though this information can be obtained from any browser, we will use the openssl tool in this Demo.
+
+Several certificates of popular sites were downloaded in advanced and stored in the Linux machine under the folder Lab-4/Cert-Info/
+
+Which of the following alternatives is a correct X.509v3 certificate field for altinn.crt certificate?
+ 
+Group of answer choices
+
+Subject Key Identifier: 93:69:12:E4:2D:D9:7F:54:4F:F2:FF:0D:28:D7:0E:BB:34:8F:B9:39
+
+Subject Key Identifier: 93:69:12:E4:2D:D9:7F:54:4F:F2:FF:0D:28:D7:0E:BB:34:8F:B9:36
+
+Subject Key Identifier: 3F:0C:DD:84:20:04:28:7E:43:B1:E1:86:E5:9F:64:37:CE:5F:B9:4C
+
+Subject Key Identifier: 8E:0C:DD:84:20:04:28:7E:43:B1:E1:86:E5:9F:64:37:CE:5F:B9:4C
+
+    openssl x509 -in altinn.crt -noout -text
+
+4. In contrast to last weeks assignment where we used openssl for public key cryptogragraphy, PGP offers us a complete Public Key Infrastructure(PKI), thus allowing us to manage several public keys.
+
+The purpose of this assignment is to see how PGP can be used as an Public Key Infrastructure. In this assignment, you are asked to decrypt a file that has been encrypted with your PGP public key.  Several Public and private keys are created in advance and are found in the PGP key chain. The encrypted files are stored in the Linux machine under the folder Lab-4/PGP/
+
+What is the decrypted text of the file File-4.gpg ?
+
+The passphrase for decrypting the file is itpe3100
+
+    gpg -d File-4.gpg 

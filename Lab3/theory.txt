@@ -123,7 +123,7 @@ RSA mode
     - Alice decrypting Bobs message
         - openssl pkeyutl -decrypt -in top-secret.enc -inkey privkey-Alice.pem -out file-from-Bob-txt
     
-DigSig Symmetric Crypto
+DigSig Symmetric Crypto (message authentication code MAC)
     - Want to send message.txt to friend. Nothing confidential but dont want it to be tampered with/changing content of. Me and friend use a secret key/phrase: datasikkerhet
     - openssl dgst -sha512 -hmac datasikkerhet message.txt
         - Hash value will be printed

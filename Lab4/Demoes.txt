@@ -1,0 +1,91 @@
+Diffie-Hellman algorithm
+    - Generate primes numbers between 0-50
+        - matho-primes 0 50
+    - Alice and Bob choose 23 as public prime base.
+    - public prime modulus 47
+    - Alice and Bob can now choose any number between 0-47 as their private keys
+    - Alice = 13 Bob = 17
+    - Use private key to generate public key
+    - Alice = 23^13 mod 37. use code below to Calculate
+        - calc 23^13%47
+    - Alice = 10 (public key). can send this to Bob
+    - Bob can Calculate 23^17 mod 47
+        - calc 23^17%47
+    - Bob = 30 (public key)
+    - Alice can now take bobs public key (30) and use her private key (13) to calculate a secret key from it
+        - calc 30^13%47
+    - Which gives us the secret key 5. This is the secret key for Alice and Bob which is never sent on the public channel
+    - Bob can do the same
+        - calc 10^17%47
+    - Also 5
+    - Alice and Bob can now use the secret key 5 to encrypt their data. Large number in real life
+
+Extract certificate info 
+    - want to explore the TLS/SSL of server/site, e.g. www.nrk.no. 
+    - get certificate and store as nrk.crt
+        - openssl s_client -showcerts -servername www.nrk.no -connect www.nrk.no:443 </dev/null > nrk.crt
+    - explore the content
+        - openssl x509 -in nrk.crt -noout -text
+
+Linux Certificate store
+    - check all certificates linux trusts 
+        - ls -l /etc/ssl/certs/
+    - check for certificates issued by CA Buypass
+        - ls -l /etc/ssl/certs/ | grep Buypass
+
+PGP Create encrypt and decrypt
+    - create/generate private and public key. linux preinstalled with a pgp software called gnu privacy guard (GPG)
+    - 2-5 min to generate. Install package that will help PGP 
+        - sudo apt -y install rng-tools 
+    - Lets generate 
+        - gpg2 --full-gen-key
+            - choose type of key (option 1 RSA and RSA)
+            - choose bit size between 1024 and 4096 (2048)
+            - choose duration of key (4m)
+            - correct? (yes)
+            - Full name: (Bob Crypto)
+            - Email: (bob@itpe3100.org)
+            - comments: Bob PGP key
+            - correct? (R)
+    - Explore key ring/store created by gpg
+        - list public keys
+            - gpg2 -k 
+        - list private keys
+            - gpg2 -K 
+    - Sending encrypted file to friend with public key in PGP keyring.
+        - encrypt file with:
+            - gpg2 -e -r alice@itpe3100.org -o secret.gpg secret.txt 
+        - decrypt file 
+            - gpg2 -d -o plain.txt secret.gpg 
+
+PGP create keyservers (NB! Depraced due to GDPR!)
+    - First get fingerprint of our key 
+        - gpg2 -k bob@itpe3100.org 
+    - Get full fingerprint with (only need short one to send to PGP key server)
+        - gpg2 --fingerprint bob@itpe3100.org 
+    - Lets check if server knows about our key
+        - gpg2 --keyserver itpe3100.cs.hioa.no --serach-keys ED19B6F8
+    - Send key 
+        - gpg2 --keyserver itpe3100.cs.hioa.no --send-keys ED19B6F8
+    
+PGP validate and trust
+    - find key
+        - gpg2 --keyserver 128.39.89.13 --search-keys homer@itpe3100.org 
+            - type 1 to import key 
+    - now it should be seen "gpg2 -k"
+    - Sign key
+        - gpg2 --edit-key homer@itpe3100.org 
+            - type "fpr"
+            - type "sign" "j"
+            - type "save"
+    - Associate trust level to it. 1 = Idk, 2 = I DONT trust, 3 = trust marginally, 4 = trust fully, 5 = trust ultimately
+        - gpg2 --edit-key homer@itpe3100.org 
+            - type "trust" 
+                - "3"
+            - type "save"
+    - Export signed key
+        - gpg2 --armor --export homer@itpe3100.org homers-key-signed-by-Bob.asc
+    
+        
+
+        

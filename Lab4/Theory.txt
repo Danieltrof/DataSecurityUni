@@ -1,0 +1,217 @@
+Session keys: keys only valid for a limited time
+    - to limit the available encryption text for cryptanalysis
+    - to limit the exposure caused by the compromise to a session key
+    - to avoid prolonged storage of a lrage number of secret keys
+        - keys are created as needed or when actually required
+    - to create idnependence across communication sessions or applications
+
+Key establishment: about establishing a commom secret between two or more parties
+    - Key Transport 
+        - A key transport protocol is a technique in which one party securely transfers a secret value to others
+    - Key Agreement
+        - In a key agreement protocol, two (or more) parties exchange values needed to derive the shared secret key and where all parties contribute to the secret
+
+Additional Features for a Key establishment protocol
+    - Key control 
+        - in some protocols one of the parties controls the value of the key (key transport), in others neither party can control (predict) the value (key agreement)
+    - Key freshness:
+        - a party is assured that the key is new (never used before)
+    - Key confirmation
+        - One party is assured that another party actually has the session key
+    - Third party requirements
+        - Whether there is a requirement to use a trusted third party or not
+    - Perfect forward secrecy
+        - A protocol is said to have Perfect forward secrecy properties  if a compromise of the long-term keys does not compromise previous session keys 
+
+Diffie-Hellman Key Agreement with Public Keys 
+    - One of the earliest and most widely used key exchange algorithms
+    - is a public key protocol developed by Whitfield Diffie and Martin Hellman in 1976
+    - based on the discrete logarithm problem, and security depends on the difficulty of calculating discrete logarithm
+    - The protocol allows two users to exchange a secret key securely, which will later be used by the summetric encryption algorithm
+        - Original Diffie-Hellman algorithm is Vulnerable to man-in-the-middle attack 
+    - Example:
+        - Choose/have a prime number
+            - primer number q = 353
+            - primitive root a = 3
+        - A and B chooses a private key between 0 and 353
+            - A chooses 97
+            - B chooses 233
+        - A and B each compute their public keys from q and a 
+            - A computes YA = 3^97 mod 353 = 40
+            - B computes YB = 3^233 mod 353 = 248
+        - Then exchange and compute secret key
+            - for A: K = (YB)^XA mod 353 = 248^97 mod 353 = 160
+            - for B: K = (YA)^XB mod 353 = 40^233 mod 353 = 160
+        - Attacker must solve:
+            3^a mod 353 = 40 which is hard specially when large prime numbers are used, usually between 1024 bits - 4096 bits
+    - brief explanation of how it Works
+        - In Diffie-Hellman, to communicating parties for example Alice and Bob together pick 2 large prime numbers which are public and visible to anyone. 
+        They then each choose their own private integers(numbers) and then use the 2 large prime numbers together withe their private numbers to each separately compute a public key. 
+        They send each other their public key. Each person uses their own private key and the other person's public key to compute a secret key. 
+        Because of the mathematics of the Diffie-Hellman algorithm, the secret key will be the same for each of them.
+
+Man-in-the-middle attack
+    - a serious attack on the exchange of secrets
+    - the basis idead of the attack is that the attacker is often called Oscar, Eve or Mallory, replaces for example the public keys of Alice and Bob with their own keys.
+
+Public Key Infrastructure (PKI) as a solution
+    - The underlying problem with Man-in-the-middle attack is that public keys are not authenticated
+    - There are several ways to solve the problem of key authentication
+    - The main mechanism used by cryptography protocols is the use of public key Infrastructure (PKI):
+        - Trusted third party (TTP) also known as certificateAuthorities (CA)
+        - Pretty good privacy (PGP)
+
+PKI
+    - Thanks to public key cryptography, we are able to communicate privately with people with whom we have securely exchanged the public key, 
+        but there are a number of other challenges that remain unsolved.
+        - How can we securely communicate with people we have never met?
+        - How do we store the keys?
+        - How do we revoke the keys if needed?
+        - How do we it worldwidem with millions of servers and billions of people and devices?
+    - Pki is made to solve
+    - The goal of PKI, is to ensure secure communication between parties who have never met before
+    - The model that PKI use today is dependent on TTP/CA
+        - CA issues certificates that we can trusted
+    - A certificate is a digital document that contains a public key, some information about the owner associated with the public key, and a digital signature from certificated issuer.
+        - certificates give us an opportunity to exchange, store and use public keys
+        - Certificates are the basic building blocks of PKI
+    
+PKI standards
+    - roots in x.509, international standard for public key Infrastructure that was Originally developed to support x.500, a standard for Electronic directory services.
+    - PKIX working group was established in 1995 by IETFwith the goal of developing internet standards to support X.509-based public key Infrastructure (PKIs)
+        - the main document produced by the pkix working group is RFC 5280, which documents the certificate format and trust path as well as the format for certificate revocation list (CRL)
+
+Certificate fields
+    - version: 3 certificate versions: 1, 2 and 3
+    - serial number: unique number that identifies a certificate issued by a given CA
+    - signature algorithm: specifies the algorithm used for certificate signature
+    - Issuer: contains the unique name (Distinguished Name (DN) ) by certificate Issuer
+    - Validity: the time interval in which the certificate is valid specified as two values: Start date and end date
+    - Subject: is the unique name (DN) which is linked to the public key for which the certificate was issued.
+    - Public key: contains information about the public key
+
+parties involved in the life cycle of the certificate
+    - subscriber or end entity
+        - the holder of a public key who wants to het a certificate that links the key to his identity
+    - certification authirty (CA)
+        - a trusted third party that issues certificates to subsciber/EE 
+        - also required to provide up-to-date revocation information online so that parties can confirm that the certificates are still valid
+    - registration authority (RA)
+        - the one that identifies the user before a certificate can be issued by the CA
+    - relying parties   
+        - consumer of the certificate. Technically, these are browsers, other programs and operating systems that perform certificate validation
+
+Obtaining a certificate
+    1. subscriber/EE generates a public/private key pair and certificate signing requst (CSR)
+        - openssl req -new -config ismail.org.cnf -keyout ismail.org.key -out ismail.org.csr 
+
+    2. Before a subsciber/ee can send certificate signing request to a ca, it must decide on the desired type of certificate. There are 3 types of certificates that a ca can issue:
+        - Domain validation
+        - organization validation
+        - extended validation
+
+    3. Once a subsciber/ee has decided on the type of certificate, it can send the certificate signing request to a CA. This is often done through a browser where the CSR file is 
+        uploaded or copied in a field
+    
+    4. RA checks identification information from subsciber/ee
+        - depending on the type of certificatem RA can request identification, organization number (NO domain), etc.
+        - Once the identity is confirmed, RA sends CSR request to CA.
+            - RA and CA are often the same entity
+
+    5. CA creates a certificate with subsciber/ee public key and information identitying subsciber/ee
+        - the certificate based on the X.509 standard will also contain information about CA, the purpose of the certificate, how long it will be valid and cryptographic information
+        - the certificate is sent to the subsciber/ee who can then use it
+    
+Domain validation
+    - The simplest type is domain validatet certificate. Here only the domain is validatet by sites and identified to the browser
+        - This is sufficient to establish an encrypted communication, but does not provide any other Verification for the user in relation to the domain being owned by the 
+            organization that the website appears to represent.
+
+organization validation
+    - In OV, both the domain and the organization are identified to the browser.
+        - OV points out to the end users taht it is in fact the relevant service owner who operates this website
+
+Extended validation
+    - EV certificate offers the highest level of trust and requires strict validation of both the domain and the organization
+        - the requirements for issuing an EV certificate are defined by CA/browser-forum baseline requirements
+
+Free certificate!
+    - 2016 "Lets Encrypt"
+    - the service has become very popular in a short time:
+        - Its Free
+        - easily managed
+        - other CAs have also started offering free Certificates
+            - digi.no - buypass tilbyr gratis sertifikater
+
+Lets Encrypt - Domain Validated only 
+    - "Lets encrypt" is free but offers only domain validated certificates
+    - automates the entire process of issuing, renewing and revoking certificates 
+        - for the automation to work, it needs to communicate directly with the server requiring the certificate otherwise a manual process is required 
+
+Self signed certificate
+    - openssl req -subj "/CN=ismail/O=SEECURIY/OU=ORG" -new -newkey rsa:2048 -sha256 -days 365 -nodes -x509 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/appache.crt 
+
+Browser: Server certificate validation 
+    1. if the certificate is validated, the browser will show a small lock which one can click on to get more inforamtion about the certificate
+    2. if there are issues with the server certificate, then the browser will be notified
+
+Relying Parties (RP) or certificate users
+    - Operating systems, browsers and other applications must have a certificate of authentication issued by a CA  
+        - in most cases, these have a collection (Trust score) of root CA certificates they trust
+
+revocation
+    - certificates are revoked when associated private keys are compromised or no longer needed.
+        - in both cases there is a risk of abuse
+    - revocation protocols and procedures are deisgned to ensure communicating parties whether the certificate they are using is valid or revoked
+    - there ar etwo standards for certificate revocation
+        - Certificate revocation list (CRL)
+        - online certificate status protocol (OCSP)
+
+Certificate revocation list (CRL)
+    - a list of all serial numbers that belong to revoked certificates that have not eyet expired
+        - CA maintain one or more such lists
+        - each certificate must contain infromation about where CRL list can be retrieved from
+    - the main challenge with CRL is that they tend to be large, making real-time lookups slow
+
+online certificate status protocol (OCSP)
+    - can provide revocation status to a single certificate
+        - ca maintain one or more such lists
+        - the certificate must contain information about which OCSP server one can get the revocation status from
+    - enables real-time lookup and solves the main challenge with CRL 
+        - OCSP have certain cost challenges for the CA. The protocol requires them to respond to each client for a given certificate in real time
+        - OCSP stampling is developed as an alternative to OCSP to address the problem
+    
+Pretty Good Privacy (PGP)
+    - Phil Zimmermann early 1990s
+
+PGP vs PKI
+    - PKI trusts Root CA (Certificate authority)
+    - PGP based on web-of-trust model 
+        - We decide if we trust that a PGP key belongs to specific user or not 
+
+PGP key management
+    - Key ring to manage keys
+    - Keys stored on one or more key rings. each user have at least 2 keychains.
+        - one for private- and one for public keys 
+    - public key is valid if:
+        - Selfgenerated or signed yourself
+        - someone you trust has signed it
+        - N number of people you partially trust has signed it
+
+Why choose PGP over PKI
+    - easy to set up
+    - doesnt require entire Infrastructure
+    - best suited for informal groups, friends, colleagues and acquantances
+    - anyone can become ca using trust signatures
+    - varied trust model
+    - one has more control over their own key. easy revocation.
+
+How to use PGP/GPG
+    - use program like GnuPG:
+        - comes pre-installed all linux distributions
+        - PGP applications also available for other paltforms as Windows and Apple
+    - generating Asymmetric keys (public and private)
+    - take part in key signing parties
+    - publish your public key to a key server (PGP keyserver). The keys can then be used by others who want to send you encrypted messages
+
+
